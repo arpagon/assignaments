@@ -47,36 +47,43 @@ handler = logging.FileHandler(LOG_FILENAME)
 handler.setLevel(logging.DEBUG)
 log.addHandler(handler)
 
-class Part(object):
+class Item(object):
     '''
-    Part of Code, PSP Defined Part
+    Item of Code, PSP Defined Part
     '''
-    def __init__(self, start_line, end_line=None):
+    def __init__(self, line, start_line):
         '''
         Init
         '''
-        self.start_line=start_line
-        self.end_line=end_line
-        self.items=[]
-    
-    def AddItem(self, item_name):
-        '''
-        AddItem
-        '''
-        self.items.append(item_name)
+        self.line=line
+        self.position=start_line
+        self.name=False
+        self.ident_level=False
+        self.sub_items={}
+        if not self.IdentifyPart():
+            del self
         
-        
-def ExtractName(line):
+    def IdentifyPart(self.line):
+        '''
+        Extract Item o Part Name. from line
+        '''
+        idents=line.split("    ")
+        ident_level=0
+        for level in idents:
+            if level.startswith("def ") or level.startswith("class "):
+                self.name=level.split(" ")[1].split("(")[0]
+                self.ident_level=ident_level
+            ident_level+=1
+        return False
+
+
+def IdentLevel(line):
     '''
-    Extract Item o Part Name. from line
+    Identify Ident Level
     '''
-    idents=line.split("    ")
-    ident_number=0
-    for ident in idents:
-        if line.startswith("def ") or line.startswith("class "):
-            name_of_part=line.split(" ")[1].split("(")[0]
-            return (name_of_part, ident_number)
-        ident_number+=1
+    line_space_removed_rigth=line.rstrip()
+    idents=line_space_removed_rigth.split("    ")
+    return len(idents) - 1
 
 def LOCCount(file):
     '''
@@ -103,16 +110,22 @@ def LOCCount(file):
                 blank_lines+=1
             else:
                 code_lines+=1
-                if line.startswith("def ") or line.startswith("class "):
-                    in_part=True
-                    running_part=""
-                    parts[""]=(total_lines)
+                runining_item=Item(line)
+                if runining_item.ident_level=0:
+                    '''Is a Part'''
+                    parts[runining_item.name]=runining_item
+                    running_part=runining_item.name
+                    
+                    
+                    
+                            
+                    
     
 
 
 def main():
     '''Unix parsing command-line options'''
-    uso = "modo de uso: %prog [options] "
+    uso = "modo de uso: %prog [options]"
     parser = OptionParser(uso)
     parser.add_option("-F", "--file", dest="file",
                   help="process file [file]", metavar="file")

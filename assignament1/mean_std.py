@@ -30,9 +30,8 @@ import os
 import logging
 from optparse import OptionParser
 import csv
-import collections
-from weakref import proxy
 from math import sqrt, fsum
+from LinkedList import LinkedList
 
 logging.basicConfig(level=logging.DEBUG)
 LOG_FILENAME = 'assignament1.log'
@@ -61,119 +60,6 @@ def Std(dataset):
     Std=sqrt(sum([(data - CurrentMean)**2 for data in dataset]) / LengthMinusOne)
     log.info("The Std of dataset is %s" % Std)
     return Std
-
-class Link(object):
-    '''
-    The proper use of __slots__ is to save space in objects.
-    '''
-    __slots__ = 'prev', 'next', 'key', '__weakref__'
-
-class LinkedList(collections.MutableSet):
-    '''
-    LinkedLink
-    Set the remembers the order elements were added
-    '''
-
-    def __init__(self, iterable=None):
-        '''
-        Init
-        '''
-        self.__root = root = Link()         
-        root.prev = root.next = root
-        self.__map = {}                     # key --> link
-        if iterable is not None:
-            self |= iterable
-
-    def __len__(self):
-        '''
-        Length for the LinkedList
-        '''
-        return len(self.__map)
-
-    def __contains__(self, key):
-        '''
-        Return Content of LinkedList
-        '''
-        return key in self.__map
-
-    def add(self, key):
-        '''
-        Add Node
-        Store new key in a new link at the end of the linked list
-        '''
-        if key not in self.__map:
-            '''
-            Not Element Eq in the list
-            '''
-            self.__map[key] = link = Link()            
-            root = self.__root
-            last = root.prev
-            link.prev, link.next, link.key = last, root, key
-            last.next = root.prev = proxy(link)
-    
-    def head(self):
-        '''
-        Return Head
-        '''
-        return list(self)[0],list(self)[-1] 
-        
-
-    def discard(self, key):
-        '''
-        Remove an existing item using self.__map to find the link which is
-        then removed by updating the links in the predecessor and successors.
-        '''
-        if key in self.__map:
-            link = self.__map.pop(key)
-            link.prev.next = link.next
-            link.next.prev = link.prev
-
-    def __iter__(self):
-        '''
-        iteration for the Next Method
-        '''
-        root = self.__root
-        curr = root.next
-        while curr is not root:
-            yield curr.key
-            curr = curr.next
-
-    def __reversed__(self):
-        '''
-        iteration in reverse mode Method
-        '''
-        root = self.__root
-        curr = root.prev
-        while curr is not root:
-            yield curr.key
-            curr = curr.prev
-
-    def pop(self, last=True):
-        '''
-        pop key
-        '''
-        if not self:
-            raise KeyError('set is empty')
-        key = next(reversed(self)) if last else next(iter(self))
-        self.discard(key)
-        return key
-
-    def __repr__(self):
-        '''
-        String Conversion representation of object LinkeList repr()
-        '''
-        if not self:
-            return '%s()' % (self.__class__.__name__,)
-        return '%s(%r)' % (self.__class__.__name__, list(self))
-
-    def __eq__(self, other):
-        '''
-        Method for de Equal comparation.
-        '''
-        if isinstance(other, LinkedList):
-            return len(self) == len(other) and list(self) == list(other)
-        return not self.isdisjoint(other)
-
 
 def read_file(file):
     '''
