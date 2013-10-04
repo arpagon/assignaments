@@ -33,13 +33,10 @@ import csv
 import collections
 from weakref import proxy
 from math import sqrt, fsum
+import string
 
 LOG_FILENAME = 'loc.log'
 COMMENT_START_STRING = "#"
-
-#
-# Logging
-#
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('LOC')
@@ -53,7 +50,15 @@ class Item(object):
     '''
     def __init__(self, line, start_line):
         '''
-        Init
+        Item Constructor
+        
+        Parameters
+        ----------
+        line: str,
+            line to analyze.
+        start_line: int, 
+            Start position
+        
         '''
         self.line=line
         self.start_line=start_line
@@ -66,7 +71,12 @@ class Item(object):
         
     def IdentifyPart(self):
         '''
-        Extract Item o Part Name. from line
+        Extract Item o Part Name. from line, Ident Level and If is a item
+        
+        Returns
+        -------
+            is_a_part: Bool, 
+                Is a Item, Part, Function or Classs
         '''
         idents=self.line.rstrip().split("    ")
         self.ident_level=len(idents) - 1
@@ -77,21 +87,27 @@ class Item(object):
         return False
 
 
-def IdentLevel(line):
-    '''
-    Identify Ident Level
-    '''
-    line_space_removed_rigth=line.rstrip()
-    idents=line_space_removed_rigth.split("    ")
-    return len(idents) - 1
-
 def LOCCount(file):
     '''
-    Function for Counting.
-        - LOC
-        - Blank Spaces
-        - ComentedLines
-        - Name of Parts
+    Count LOC in File. Follow Python Code Standar.
+    
+    Parameters
+    ----------
+    file : str, path of file 
+        file for counting lines..
+
+    Returns
+    -------
+    code_lines: int, 
+        phisical code lines
+    parts: dic
+        Dictoinary of parts
+    total_lines: int,
+        Total fo lines.
+    blank_lines: int,
+        Blank Lines
+    comment_lines: int,
+        Comment lines.
     '''
     total_lines=0
     code_lines=0
@@ -126,14 +142,13 @@ def LOCCount(file):
                         log.debug("ADDED PART %s %s" % (running_item.name, 
                                                                         line))
                     elif running_item.ident_level==1:
-                        #logpart.debug("runinng_part %s: running_item.name : %s" % (running_part, running_item.name))
                         parts[running_part].sub_items[running_item.name]=running_item
                         parts[running_part].length+=1
                         logpart.debug("IN PART %s  ADD ITEM %s: %s" % (running_part, 
                                                     running_item.name, line))
                     else:
                         parts[running_part].length+=1
-                        logpart.debug("PART LENGTH %s: %s" % (running_part, 
+                        logpart.debug("PART LENGTH %s: %s %s" % (running_part, 
                                             parts[running_part].length, line))
                 else:
                     if in_part:
@@ -154,15 +169,27 @@ def LOCCount(file):
 def FormatOutput(code_lines, parts, total_lines=0, blank_lines=0, comment_lines=0):
     '''
     OutPut whit the optimal Format.
-    '''
-    print "===Parts==="
-    for part in parts:
-        
-        print (parts[part].name, parts[part].length)
-        print parts[part].sub_items.keys()
     
-    print "===Totals==="
-    print code_lines
+    Parameters
+    -------
+    code_lines: int, 
+        phisical code lines
+    parts: dic
+        Dictoinary of parts
+    total_lines: int,
+        Total fo lines.
+    blank_lines: int,
+        Blank Lines
+    comment_lines: int,
+        Comment lines.
+    
+    '''
+    print "===================================================================="
+    print string.expandtabs("part\tlength\titmes\ttotal",16)
+    for part in parts:
+        print string.expandtabs("%s\t%s\t%s" % (parts[part].name, 
+                    parts[part].length, len(parts[part].sub_items.keys())),16)
+    print string.expandtabs("\t\t\t%s" % code_lines,16)
 
 
 def main():
