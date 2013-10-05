@@ -95,8 +95,7 @@ def main():
                   action="store_true", metavar="file")
     parser.add_option("-m", "--mean", dest="mean",
                   help="Calculate Mean from dataset [file]", 
-                  action="store_true", 
-		  metavar="file")
+                  action="store_true", metavar="file")
     (options, args) = parser.parse_args()
     log.info("START APP")
     if options.file:

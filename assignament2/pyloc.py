@@ -37,8 +37,9 @@ import string
 
 LOG_FILENAME = 'loc.log'
 COMMENT_START_STRING = "#"
+PY_EXTENSION = ("py","python")
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 log = logging.getLogger('LOC')
 handler = logging.FileHandler(LOG_FILENAME)
 handler.setLevel(logging.DEBUG)
@@ -86,8 +87,60 @@ class Item(object):
                 return True
         return False
 
+def LocateFiles(root, extensions=PY_EXTENSION):
+    '''
+    Locate all files matching supplied filename pattern in and below
+    supplied root directory.
+    
+    Parameters
+    ----------
+    root : str, path of programs 
+        search file for counting lines..
+    extensions : list, List of extensions
+        Extension to search programs
+    '''
+    for path, dirs, files in os.walk(os.path.abspath(root)):
+        for filename in files:
+            for ext in extensions:
+                if filename.endswith(ext):
+                    if os.stat(os.path.join(path, filename)):
+                        yield os.path.join(path, filename)
 
-def LOCCount(file):
+def LOCCountDir(root, extensions=PY_EXTENSION):
+    '''
+    Locate all files matching supplied filename pattern in and below
+    supplied root directory.
+    
+    Parameters
+    ----------
+    root : str, path of programs 
+        search file for counting lines..
+    extensions : list, List of extensions
+        Extension to search programs
+    '''
+    locate = LocateFiles(root, extensions)
+    great_total = 0
+    while True:
+        try:
+            file_to_count = locate.next()
+            log.info("Counting File: %s" % file_to_count)
+            (code_lines, parts, total_lines, blank_lines, comment_lines)=LOCCountFile(file_to_count)
+            #print "===================================================================="
+            print string.expandtabs("\t%s" % file_to_count.split("/")[-1],16)
+            FormatOutput(code_lines, parts, total_lines, blank_lines, comment_lines)
+            great_total+=code_lines
+        except StopIteration:
+            log.info("Fin De Archivado")
+            break
+    print "===================================================================="
+    print string.expandtabs("TOTAL\t\t\t%s" % great_total,16)
+    print "===================================================================="
+            
+
+    
+    
+
+def LOCCountFile(file):
     '''
     Count LOC in File. Follow Python Code Standar.
     
@@ -185,10 +238,13 @@ def FormatOutput(code_lines, parts, total_lines=0, blank_lines=0, comment_lines=
     
     '''
     print "===================================================================="
-    print string.expandtabs("part\tlength\titmes\ttotal",16)
+    print string.expandtabs("Part Name\tN of Items\tPart Size\tTotal",16)
+    print "===================================================================="
     for part in parts:
+        if len(parts[part].sub_items.keys())==0:
+            parts[part].sub_items[None]=None
         print string.expandtabs("%s\t%s\t%s" % (parts[part].name, 
-                    parts[part].length, len(parts[part].sub_items.keys())),16)
+                    len(parts[part].sub_items.keys()), parts[part].length),16)
     print string.expandtabs("\t\t\t%s" % code_lines,16)
 
 
@@ -198,10 +254,14 @@ def main():
     parser = OptionParser(uso)
     parser.add_option("-F", "--file", dest="file",
                   help="process file [file]", metavar="file")
+    parser.add_option("-D", "--dir", dest="dir",
+                  help="process dir [DIR]", metavar="Directory")
     (options, args) = parser.parse_args()
-    log.info("START COUNTING")
-    if options.file:
-        (code_lines, parts, total_lines, blank_lines, comment_lines)=LOCCount(options.file)
+    log.info("START COUNTING")              #Start Program
+    if options.dir:
+        LOCCountDir(options.dir)
+    elif options.file:
+        (code_lines, parts, total_lines, blank_lines, comment_lines)=LOCCountFile(options.file)
         FormatOutput(code_lines, parts, total_lines, blank_lines, comment_lines)
     else:
         parser.error("please define File,  %prog -F example.py\n Please use -h for help")
