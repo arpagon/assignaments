@@ -167,7 +167,8 @@ def CalcBetaZero(mean_y, beta_one, mean_x):
 	return beta_zero
 
 #CalcCorrelationR
-def CalcCorrelationR(length_list, sum_xy, sum_x, sum_y, sum_square_x, sum_square_y):
+def CalcCorrelationR(length_list, sum_xy, 
+                     sum_x, sum_y, sum_square_x, sum_square_y):
 	'''
 	Calculate Correlation index R.
 
@@ -192,9 +193,12 @@ def CalcCorrelationR(length_list, sum_xy, sum_x, sum_y, sum_square_x, sum_square
     	Correlation Index R
 	'''
 	correlation_r_numerator = (length_list * sum_xy) - (sum_x * sum_y)
-	correlation_r_denomintor_one = (length_list * sum_square_x ) - ( sum_x ) ** 2 )
-	correlation_r_denomintor_two = (length_list * sum_square_y ) - ( sum_y ) ** 2 )
-	correlation_r_denomintor = sqrt( correlation_r_denomintor_one * correlation_r_denomintor_two )
+	correlation_r_denomintor_one = (( length_list * sum_square_x ) - 
+	                                                           ( sum_x ) ** 2 ))
+	correlation_r_denomintor_two = ((length_list * sum_square_y ) - 
+	                                                           ( sum_y ) ** 2 ))
+	correlation_r_denomintor = sqrt( correlation_r_denomintor_one * 
+	                                              correlation_r_denomintor_two )
 	correlation_r = beta_numerator / beta_denomintor
 	retun correlation_r
 
@@ -263,15 +267,18 @@ def FormatOutput(beta_zero, beta_one,
     '''
     #Print Header
 	print "===================================================================="
-    print string.expandtabs("BetaZero\tBetaOne\tCorrelation R\tCorrelation R^2",16)
+    print string.expandtabs("BetaZero\tBetaOne\tCorrelation R\tCorrelation R^2",
+                                                                             16)
     print "===================================================================="
     #Print Values
     print string.expandtabs("%s\t%s\t%s\t%s" % (
-    						beta_zero,beta_one,correlation_r,correlation_square_r)
+    						beta_zero,beta_one,
+    						correlation_r,correlation_square_r)
     						,16)
     print "===================================================================="
 	if estimated_proxy_size and prediction:
-		print ("For E=%s The prediction is P=%s" % (estimated_proxy_size, prediction))
+		print ("For E=%s The prediction is P=%s" % 
+		                                     (estimated_proxy_size, prediction))
 
 #main
 def main():
@@ -279,9 +286,9 @@ def main():
     uso = "modo de uso: %prog [options] "
     parser = OptionParser(uso)
     parser.add_option("-F", "--file", dest="file",
-                  help="File Whit Dataset file.csv [file]", metavar="file")
-    parser.add_option("-e", "--estimated-proxy-size", dest="estimated_proxy_size",
-                  help="Calculate prediction for E")
+                       help="File Whit Dataset file.csv [file]", metavar="file")
+    parser.add_option("-e", "--estimated-proxy-size", 
+                 dest="estimated_proxy_size", help="Calculate prediction for E")
     (options, args) = parser.parse_args()
     log.info("START APP")
     if options.file:
@@ -294,15 +301,18 @@ def main():
 			mean_x, mean_y, 
 			length_list) = CalcSumatories(dataset)
 			#Calc BetaOne
-			beta_one = CalcBetaOne(sum_xy, length_list, mean_x, mean_y, sum_square_x)
+			beta_one = CalcBetaOne(sum_xy, length_list, mean_x, 
+			                                               mean_y, sum_square_x)
 			#Calc BetaZero
 			beta_zero = CalcBetaZero(mean_y, beta_one, mean_x)
 			#Calc Corelation
-			correlation_r = CalcCorrelationR(length_list, sum_xy, sum_x, sum_y, sum_square_x, sum_square_y)
+			correlation_r = CalcCorrelationR(length_list, 
+			                   sum_xy, sum_x, sum_y, sum_square_x, sum_square_y)
 			#Calc SquareCorelation
 			correlation_square_r = CalcSquareCorrelation(correlation_r)
         	if options.estimated_proxy_size:
-        		prediction=CalcPrediction(beta_zero, beta_one, options.estimated_proxy_size)
+        		prediction=CalcPrediction(beta_zero, beta_one, 
+        		                                   options.estimated_proxy_size)
         		FormatOutput(beta_zero, beta_one, 
 							correlation_r, correlation_square_r, 
 							options.estimated_proxy_size, prediction)
@@ -312,7 +322,8 @@ def main():
         else:
              parser.error("File must contaian 2 or more pairs of data")
     else:
-        parser.error("please define dataset, %prog -F example.csv\n Please use -h for help")
+        parser.error("please define dataset, %prog -F example.csv\n" 
+                                                       "Please use -h for help")
 
 if __name__=='__main__':
     main()
