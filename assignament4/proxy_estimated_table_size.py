@@ -62,9 +62,9 @@ class Parts(object):
         '''
         Init
         '''
-        self.name=name
-        self.loc=loc
-        self.n_of_items=n_of_items
+        self.name = name
+        self.loc = loc
+        self.n_of_items = n_of_items
         
     #CalcLocMethod
     def CalcLocMethod(self):
@@ -81,10 +81,10 @@ class Parts(object):
         loc_methods: float, loc/methods value
         '''
         try:
-            self.loc_methods=selt.loc/self.n_of_items
+            self.loc_methods = selt.loc / self.n_of_items
         except ZeroDivisionError:
             log.warning("Number of for part %s items is Zero" % (self.name) )
-            self.loc_methods =0
+            self.loc_methods = 0
         return self.loc_methods
 
     def CalcNormSize(self):
@@ -100,7 +100,7 @@ class Parts(object):
         -------
         norm_size: float, loc/metho normalized.
         '''
-        self.norm_size=NaturalLogartim(self.loc_methods)
+        self.norm_size = NaturalLogartim(self.loc_methods)
         return self.norm_size
 
 def CalcTableSizeNormalized(parts):
@@ -126,16 +126,16 @@ def CalcTableSizeNormalized(parts):
         Normalized Proxy sixe for large size.
     '''
     #for part in parts:
-    dataset=[]
+    dataset = []
     for part in parts:
         dataset.append(part.norm_size)
-    std_ln_size=Std(dataset)
-    mean_ln_size=Mean(dataset)
-    ln_vs=mean_ln_size - 2 * std_ln_size
-    ln_s=mean_ln_size - std_ln_size
-    ln_m=mean_ln_size
-    ln_l=mean_ln_size + std_ln_size
-    ln_vl=mean_ln_size + 2 * std_ln_size
+    std_ln_size = Std(dataset)
+    mean_ln_size = Mean(dataset)
+    ln_vs = mean_ln_size - 2 * std_ln_size
+    ln_s = mean_ln_size - std_ln_size
+    ln_m = mean_ln_size
+    ln_l = mean_ln_size + std_ln_size
+    ln_vl = mean_ln_size + 2 * std_ln_size
     return (ln_vs, ln_s, ln_m, ln_l, ln_vl)
 
 #CalcTableSize
@@ -193,7 +193,7 @@ def read_file(file):
     #Open File
     with open(file, 'rb') as csvfile:
         reader = csv.reader(csvfile)
-        parts=[]
+        parts = []
         #for row in file:
         for row in reader:
                 #if length of row >= 3
@@ -246,11 +246,11 @@ def main():
     (options, args) = parser.parse_args()
     log.info("START APP")
     if options.file:
-        dataset=read_file(options.file)
+        dataset = read_file(options.file)
         if len(dataset) >= 2:
-            parts=read_file(options.file)
-            (ln_vs, ln_s, ln_m, ln_l, ln_vl)=CalcTableSizeNormalized(parts)
-            (vs, s, m, l, vl)=CalcTableSize(ln_vs, ln_s, ln_m, ln_l, ln_vl)
+            parts = read_file(options.file)
+            (ln_vs, ln_s, ln_m, ln_l, ln_vl) = CalcTableSizeNormalized(parts)
+            (vs, s, m, l, vl) = CalcTableSize(ln_vs, ln_s, ln_m, ln_l, ln_vl)
             FormatOutput(vs, s, m, l, vl)
         else:
              parser.error("File must contaian 2 or more pairs of data")
