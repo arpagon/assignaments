@@ -85,7 +85,7 @@ class Parts(object):
         try:
             self.loc_methods = self.loc / self.n_of_items
         except ZeroDivisionError:
-            log.warning("Number of for part %s items is Zero" % (self.name) )
+            log.warning("Number of for part {0!s} items is Zero".format((self.name)) )
             self.loc_methods = 0
         return self.loc_methods
 
@@ -205,7 +205,7 @@ def read_file(file):
                         parts.append(Parts(name=row[0],
                             loc=float(row[1]), n_of_items=float(row[2])))
                     except ValueError:
-                        log.warning("%s Problem whit row" % row)
+                        log.warning("{0!s} Problem whit row".format(row))
                 else:
                     #mesnsaje: row whit insuficient data.
                     log.warning("row whit insuficient data or Empty Row")
@@ -234,7 +234,7 @@ def FormatOutput(vs, s, m, l, vl):
     print string.expandtabs("VS\tS\tM\tL\tVL", 16)
     print "===================================================================="
     #Print Values
-    print string.expandtabs("%s\t%s\t%s\t%s\t%s" % (vs, s, m, l, vl), 16)
+    print string.expandtabs("{0!s}\t{1!s}\t{2!s}\t{3!s}\t{4!s}".format(vs, s, m, l, vl), 16)
     print "===================================================================="
 
 #main

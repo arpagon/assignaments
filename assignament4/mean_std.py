@@ -47,7 +47,7 @@ def Mean(dataset):
     Summatory=fsum(dataset)
     Length=len(dataset)
     Mean=Summatory/Length
-    log.info("The Mean of dataset is %s" % Mean)
+    log.info("The Mean of dataset is {0!s}".format(Mean))
     return Mean
 
 def Std(dataset):
@@ -58,7 +58,7 @@ def Std(dataset):
     LengthMinusOne=len(dataset)-1
     CurrentMean=Mean(dataset)
     Std=sqrt(sum([(data - CurrentMean)**2 for data in dataset]) / LengthMinusOne)
-    log.info("The Std of dataset is %s" % Std)
+    log.info("The Std of dataset is {0!s}".format(Std))
     return Std
 
 def read_file(file):
@@ -78,7 +78,7 @@ def read_file(file):
                     try:
                         dataset.add(float(row[0]))
                     except ValueError:
-                        log.warning("%s Is not a float" % row[0])
+                        log.warning("{0!s} Is not a float".format(row[0]))
                 else:
                     log.warning("Empty Row")
         return dataset

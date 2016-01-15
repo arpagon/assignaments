@@ -123,17 +123,17 @@ def LOCCountDir(root, extensions=PY_EXTENSION):
     while True:
         try:
             file_to_count = locate.next()
-            log.info("Counting File: %s" % file_to_count)
+            log.info("Counting File: {0!s}".format(file_to_count))
             (code_lines, parts, total_lines, blank_lines, comment_lines)=LOCCountFile(file_to_count)
             #print "===================================================================="
-            print string.expandtabs("\t%s" % file_to_count.split("/")[-1],16)
+            print string.expandtabs("\t{0!s}".format(file_to_count.split("/")[-1]),16)
             FormatOutput(code_lines, parts, total_lines, blank_lines, comment_lines)
             great_total+=code_lines
         except StopIteration:
             log.info("Fin De Archivado")
             break
     print "===================================================================="
-    print string.expandtabs("TOTAL\t\t\t%s" % great_total,16)
+    print string.expandtabs("TOTAL\t\t\t{0!s}".format(great_total),16)
     print "===================================================================="
             
 
@@ -172,17 +172,17 @@ def LOCCountFile(file):
             
     with open(file, 'rb') as code_file:
         for line in code_file:
-            log.debug("RUNINGPART:%s  INPART:%s" % (running_part, in_part))
+            log.debug("RUNINGPART:{0!s}  INPART:{1!s}".format(running_part, in_part))
             total_lines+=1
             if line.strip().startswith("#"):
                 comment_lines+=1
-                log.debug("COMENT LINE %s %s" % (comment_lines, line))
+                log.debug("COMENT LINE {0!s} {1!s}".format(comment_lines, line))
             elif not line.strip():
                 blank_lines+=1
-                log.debug("BLANK LINE %s %s" % (blank_lines, line))
+                log.debug("BLANK LINE {0!s} {1!s}".format(blank_lines, line))
             else:
                 code_lines+=1
-                log.debug("CODE LINE %s %s" % (code_lines, line))
+                log.debug("CODE LINE {0!s} {1!s}".format(code_lines, line))
                 running_item=Item(line, total_lines)
                 if running_item.is_a_part:
                     if running_item.ident_level==0:
@@ -191,24 +191,24 @@ def LOCCountFile(file):
                         running_part=running_item.name
                         parts[running_part].length+=1
                         in_part=True
-                        logpart=logging.getLogger('LOC.%s' % running_part)
-                        log.debug("ADDED PART %s %s" % (running_item.name, 
+                        logpart=logging.getLogger('LOC.{0!s}'.format(running_part))
+                        log.debug("ADDED PART {0!s} {1!s}".format(running_item.name, 
                                                                         line))
                     elif running_item.ident_level==1:
                         parts[running_part].sub_items[running_item.name]=running_item
                         parts[running_part].length+=1
-                        logpart.debug("IN PART %s  ADD ITEM %s: %s" % (running_part, 
+                        logpart.debug("IN PART {0!s}  ADD ITEM {1!s}: {2!s}".format(running_part, 
                                                     running_item.name, line))
                     else:
                         parts[running_part].length+=1
-                        logpart.debug("PART LENGTH %s: %s %s" % (running_part, 
+                        logpart.debug("PART LENGTH {0!s}: {1!s} {2!s}".format(running_part, 
                                             parts[running_part].length, line))
                 else:
                     if in_part:
-                        logpart.debug("IDENT: %s" % running_item.ident_level)
+                        logpart.debug("IDENT: {0!s}".format(running_item.ident_level))
                         if running_item.ident_level>0:
                             parts[running_part].length+=1
-                            logpart.debug("PART LENGTH %s: %s" % (running_part, 
+                            logpart.debug("PART LENGTH {0!s}: {1!s}".format(running_part, 
                                             parts[running_part].length))
                         else:
                             parts[running_part].end_line=total_lines
@@ -243,9 +243,9 @@ def FormatOutput(code_lines, parts, total_lines=0, blank_lines=0, comment_lines=
     for part in parts:
         if len(parts[part].sub_items.keys())==0:
             parts[part].sub_items[None]=None
-        print string.expandtabs("%s\t%s\t%s" % (parts[part].name, 
+        print string.expandtabs("{0!s}\t{1!s}\t{2!s}".format(parts[part].name, 
                     len(parts[part].sub_items.keys()), parts[part].length),16)
-    print string.expandtabs("\t\t\t%s" % code_lines,16)
+    print string.expandtabs("\t\t\t{0!s}".format(code_lines),16)
 
 
 def main():

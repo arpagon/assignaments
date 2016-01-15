@@ -7,16 +7,16 @@ class TestAssignament(unittest.TestCase):
         print "---------------------------------------"
         print "In method", self._testMethodName
         print a
-        print("%.2f" % Mean(a))
-        print("%.2f" % Std(a))
+        print("{0:.2f}".format(Mean(a)))
+        print("{0:.2f}".format(Std(a)))
     
     def test_development_hours(self):
         print "---------------------------------------"
         print "In method", self._testMethodName
         a=LinkedList([15.0,69.9,6.5,22.4,28.4,65.9,19.4,198.7,38.8,138.2])
         print a
-        print("%.2f" % Mean(a))
-        print("%.2f" % Std(a))
+        print("{0:.2f}".format(Mean(a)))
+        print("{0:.2f}".format(Std(a)))
 
 if __name__ == '__main__':
     unittest.main()

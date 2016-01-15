@@ -68,7 +68,7 @@ def read_file(file):
                     try:
                         dataset.add(( float(row[0]) , float(row[1]) ))
                     except ValueError:
-                        log.warning("%s Problem whit row" % row[0])
+                        log.warning("{0!s} Problem whit row".format(row[0]))
                 else:
                     #mesnsaje: row whit insuficient data.
                     log.warning("row whit insuficient data or Empty Row")
@@ -280,14 +280,13 @@ def FormatOutput(beta_zero, beta_one,
                                                                              16)
     print "===================================================================="
     #Print Values
-    print string.expandtabs("%s\t%s\t%s\t%s" % (
-                            beta_zero,beta_one,
-                            correlation_r,correlation_square_r)
+    print string.expandtabs("{0!s}\t{1!s}\t{2!s}\t{3!s}".format(
+                            beta_zero, beta_one,
+                            correlation_r, correlation_square_r)
                             ,16)
     print "===================================================================="
     if estimated_proxy_size and prediction:
-        print ("For E=%s The prediction is P=%s" % 
-                                             (estimated_proxy_size, prediction))
+        print ("For E={0!s} The prediction is P={1!s}".format(estimated_proxy_size, prediction))
 
 #main
 def main():

@@ -130,8 +130,8 @@ class LinkedList(collections.MutableSet):
         String Conversion representation of object LinkeList repr()
         '''
         if not self:
-            return '%s()' % (self.__class__.__name__,)
-        return '%s(%r)' % (self.__class__.__name__, list(self))
+            return '{0!s}()'.format(self.__class__.__name__)
+        return '{0!s}({1!r})'.format(self.__class__.__name__, list(self))
 
     def __eq__(self, other):
         '''
